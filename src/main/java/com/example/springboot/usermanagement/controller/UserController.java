@@ -50,6 +50,20 @@ public class UserController {
 
     }
 
+    @PutMapping("/")
+    public User updateUser(@RequestBody User theUser){
+        if(theUser.getId()== null){
+            throw new UserNotFound("Please provide the ID.");
+        }
+        Optional<User> tempUser = userService.findById(theUser.getId());
+
+        if(tempUser.isEmpty()){
+            throw new UserNotFound("User is not available with id - " + theUser.getId());
+        }
+        User dbUser = userService.save(theUser);
+        return dbUser;
+    }
+
     @DeleteMapping("/{user_id}")
     public String deleteUserById(@PathVariable String user_id) {
         Optional<User> tempUser = userService.findById(user_id);
