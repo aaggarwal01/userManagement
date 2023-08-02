@@ -38,7 +38,7 @@ public class UserController {
 
     @PostMapping("/")
     public User createUser(@RequestBody User tempUser) {
-        Optional <User> theUser = userService.findById(tempUser.getEmail());
+        Optional<User> theUser = userService.findById(tempUser.getEmail());
 
         if(theUser == null ){
             throw new RuntimeException("User already Existed! Consider Updating the user!");
@@ -50,25 +50,23 @@ public class UserController {
 
     }
 
-    @PutMapping("/")
-    public User updateUser(@RequestBody User theUser){
-        if(theUser.getId()== null){
-            throw new UserNotFound("Please provide the ID.");
-        }
-        Optional<User> tempUser = userService.findById(theUser.getId());
+    @PutMapping("/{user_id}")
+    public User updateUser(@PathVariable String user_id, @RequestBody User theUser){
 
-        if(tempUser.isEmpty()){
-            throw new UserNotFound("User is not available with id - " + theUser.getId());
+        if(userService.findById(user_id).isEmpty()){
+            throw new UserNotFound("User is not available wit id - " + user_id);
         }
-        User dbUser = userService.save(theUser);
-        return dbUser;
+       User myUser = userService.save(theUser);
+
+
+        return myUser;
     }
 
     @DeleteMapping("/{user_id}")
     public String deleteUserById(@PathVariable String user_id) {
         Optional<User> tempUser = userService.findById(user_id);
 
-        if(tempUser.isEmpty()){
+        if(tempUser == null){
             throw new UserNotFound("User is not available with id - " + user_id);
         }
 
